@@ -1,0 +1,407 @@
+{
+  "season": "2025-2026",
+  "timezone": "America/Chicago",
+  "generated_at": "2025-12-27T03:46:06-06:00",
+  "games": [
+    {
+      "date": "2025-11-04",
+      "opponent": "vs Evansville",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "W 82-51",
+      "notes": "",
+      "stable_id": "2025-11-04-vs-evansville-regular"
+    },
+    {
+      "date": "2025-11-07",
+      "opponent": "vs Oakland",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "W 87-77",
+      "notes": "",
+      "stable_id": "2025-11-07-vs-oakland-regular"
+    },
+    {
+      "date": "2025-11-13",
+      "opponent": "@ 8 Alabama",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "W 87-80",
+      "notes": "",
+      "stable_id": "2025-11-13-8-alabama-regular"
+    },
+    {
+      "date": "2025-11-16",
+      "opponent": "vs Akron",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "W 97-79",
+      "notes": "",
+      "stable_id": "2025-11-16-vs-akron-regular"
+    },
+    {
+      "date": "2025-11-20",
+      "opponent": "vs Memphis *",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "W 80-71",
+      "notes": "",
+      "stable_id": "2025-11-20-vs-memphis-regular"
+    },
+    {
+      "date": "2025-11-21",
+      "opponent": "vs 15 Texas Tech *",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "W 86-56",
+      "notes": "",
+      "stable_id": "2025-11-21-vs-15-texas-tech-regular"
+    },
+    {
+      "date": "2025-11-28",
+      "opponent": "vs Eastern Illinois",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "W 109-62",
+      "notes": "",
+      "stable_id": "2025-11-28-vs-eastern-illinois-regular"
+    },
+    {
+      "date": "2025-12-02",
+      "opponent": "@ Rutgers",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "W 81-65",
+      "notes": "",
+      "stable_id": "2025-12-02-rutgers-regular"
+    },
+    {
+      "date": "2025-12-06",
+      "opponent": "vs 10 Iowa State",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "L 81-58",
+      "notes": "",
+      "stable_id": "2025-12-06-vs-10-iowa-state-regular"
+    },
+    {
+      "date": "2025-12-10",
+      "opponent": "vs Minnesota",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "W 85-57",
+      "notes": "",
+      "stable_id": "2025-12-10-vs-minnesota-regular"
+    },
+    {
+      "date": "2025-12-13",
+      "opponent": "vs Marquette",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "W 79-59",
+      "notes": "",
+      "stable_id": "2025-12-13-vs-marquette-regular"
+    },
+    {
+      "date": "2025-12-20",
+      "opponent": "vs 21 Auburn *",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "W 88-60",
+      "notes": "",
+      "stable_id": "2025-12-20-vs-21-auburn-regular"
+    },
+    {
+      "date": "2025-12-29",
+      "opponent": "vs Kent State",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-12-29-vs-kent-state-regular"
+    },
+    {
+      "date": "2025-01-03",
+      "opponent": "@ Wisconsin",
+      "location": "",
+      "phase": "regular",
+      "tv": "FOX",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-01-03-wisconsin-regular"
+    },
+    {
+      "date": "2025-01-07",
+      "opponent": "vs Washington",
+      "location": "",
+      "phase": "regular",
+      "tv": "BTN",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-01-07-vs-washington-regular"
+    },
+    {
+      "date": "2025-01-10",
+      "opponent": "vs Penn State",
+      "location": "",
+      "phase": "regular",
+      "tv": "BTN",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-01-10-vs-penn-state-regular"
+    },
+    {
+      "date": "2025-01-14",
+      "opponent": "vs 25 Iowa",
+      "location": "",
+      "phase": "regular",
+      "tv": "BTN",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-01-14-vs-25-iowa-regular"
+    },
+    {
+      "date": "2025-01-17",
+      "opponent": "@ 24 USC",
+      "location": "",
+      "phase": "regular",
+      "tv": "Peacock",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-01-17-24-usc-regular"
+    },
+    {
+      "date": "2025-01-20",
+      "opponent": "@ UCLA",
+      "location": "",
+      "phase": "regular",
+      "tv": "Peacock",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-01-20-ucla-regular"
+    },
+    {
+      "date": "2025-01-24",
+      "opponent": "vs 20 Illinois",
+      "location": "",
+      "phase": "regular",
+      "tv": "FOX",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-01-24-vs-20-illinois-regular"
+    },
+    {
+      "date": "2025-01-27",
+      "opponent": "@ Indiana",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-01-27-indiana-regular"
+    },
+    {
+      "date": "2025-02-01",
+      "opponent": "@ Maryland",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-02-01-maryland-regular"
+    },
+    {
+      "date": "2025-02-07",
+      "opponent": "vs Oregon",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-02-07-vs-oregon-regular"
+    },
+    {
+      "date": "2025-02-10",
+      "opponent": "@ 13 Nebraska",
+      "location": "",
+      "phase": "regular",
+      "tv": "FS1",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-02-10-13-nebraska-regular"
+    },
+    {
+      "date": "2025-02-14",
+      "opponent": "@ 25 Iowa",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-02-14-25-iowa-regular"
+    },
+    {
+      "date": "2025-02-17",
+      "opponent": "vs 2 Michigan",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-02-17-vs-2-michigan-regular"
+    },
+    {
+      "date": "2025-02-20",
+      "opponent": "vs Indiana",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-02-20-vs-indiana-regular"
+    },
+    {
+      "date": "2025-02-26",
+      "opponent": "vs 9 Michigan State",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-02-26-vs-9-michigan-state-regular"
+    },
+    {
+      "date": "2025-03-01",
+      "opponent": "@ Ohio State",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-03-01-ohio-state-regular"
+    },
+    {
+      "date": "2025-03-04",
+      "opponent": "@ Northwestern",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-03-04-northwestern-regular"
+    },
+    {
+      "date": "2025-03-07",
+      "opponent": "vs Wisconsin",
+      "location": "",
+      "phase": "regular",
+      "tv": "",
+      "result": "",
+      "notes": "",
+      "stable_id": "2025-03-07-vs-wisconsin-regular"
+    },
+    {
+      "date": "2026-03-11",
+      "opponent": "Big Ten Tournament \u2013 TBD",
+      "location": "Indianapolis, IN",
+      "phase": "big_ten_tournament",
+      "tv": "",
+      "result": "",
+      "notes": "Placeholder; will update when bracket known.",
+      "stable_id": "2026-03-11-big-ten-tournament-tbd-big-ten-tournament"
+    },
+    {
+      "date": "2026-03-15",
+      "opponent": "Selection Sunday",
+      "location": "TBD",
+      "phase": "ncaa_tournament",
+      "tv": "",
+      "result": "",
+      "notes": "Placeholder; bracket announcement.",
+      "stable_id": "2026-03-15-selection-sunday-ncaa-tournament"
+    },
+    {
+      "date": "2026-03-17",
+      "opponent": "NCAA First Four \u2013 TBD",
+      "location": "TBD",
+      "phase": "ncaa_tournament",
+      "tv": "",
+      "result": "",
+      "notes": "Placeholder window.",
+      "stable_id": "2026-03-17-ncaa-first-four-tbd-ncaa-tournament"
+    },
+    {
+      "date": "2026-03-19",
+      "opponent": "NCAA Round of 64 \u2013 TBD",
+      "location": "TBD",
+      "phase": "ncaa_tournament",
+      "tv": "",
+      "result": "",
+      "notes": "Placeholder window.",
+      "stable_id": "2026-03-19-ncaa-round-of-64-tbd-ncaa-tournament"
+    },
+    {
+      "date": "2026-03-21",
+      "opponent": "NCAA Round of 32 \u2013 TBD",
+      "location": "TBD",
+      "phase": "ncaa_tournament",
+      "tv": "",
+      "result": "",
+      "notes": "Placeholder window.",
+      "stable_id": "2026-03-21-ncaa-round-of-32-tbd-ncaa-tournament"
+    },
+    {
+      "date": "2026-03-26",
+      "opponent": "NCAA Sweet 16 \u2013 TBD",
+      "location": "TBD",
+      "phase": "ncaa_tournament",
+      "tv": "",
+      "result": "",
+      "notes": "Placeholder window.",
+      "stable_id": "2026-03-26-ncaa-sweet-16-tbd-ncaa-tournament"
+    },
+    {
+      "date": "2026-03-28",
+      "opponent": "NCAA Elite Eight \u2013 TBD",
+      "location": "TBD",
+      "phase": "ncaa_tournament",
+      "tv": "",
+      "result": "",
+      "notes": "Placeholder window.",
+      "stable_id": "2026-03-28-ncaa-elite-eight-tbd-ncaa-tournament"
+    },
+    {
+      "date": "2026-04-04",
+      "opponent": "Final Four \u2013 TBD",
+      "location": "Indianapolis, IN",
+      "phase": "ncaa_tournament",
+      "tv": "",
+      "result": "",
+      "notes": "Placeholder window.",
+      "stable_id": "2026-04-04-final-four-tbd-ncaa-tournament"
+    },
+    {
+      "date": "2026-04-06",
+      "opponent": "National Championship \u2013 TBD",
+      "location": "Indianapolis, IN",
+      "phase": "ncaa_tournament",
+      "tv": "",
+      "result": "",
+      "notes": "Placeholder window.",
+      "stable_id": "2026-04-06-national-championship-tbd-ncaa-tournament"
+    }
+  ]
+}

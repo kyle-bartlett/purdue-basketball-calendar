@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.bartlettlabs.purdue.calendar.refresh</string>
+
+    <key>ProgramArguments</key>
+    <array>
+      <string>/bin/bash</string>
+      <string>-lc</string>
+      <string>cd "$HOME/purdue-basketball-calendar" &amp;&amp; source .venv/bin/activate &amp;&amp; python scripts/purdue_refresh_from_web.py --config config.yml</string>
+    </array>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+      <key>Hour</key><integer>6</integer>
+      <key>Minute</key><integer>15</integer>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>~/Library/Logs/purdue-calendar/launchd.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>~/Library/Logs/purdue-calendar/launchd.err.log</string>
+  </dict>
+</plist>

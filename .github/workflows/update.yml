@@ -1,0 +1,17 @@
+name: Daily Purdue Calendar Refresh
+
+on:
+  schedule:
+    - cron: "30 11 * * *"  # ~5:30 AM America/Chicago (GitHub uses UTC)
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: python scripts/purdue_refresh_from_web.py --config config.yml

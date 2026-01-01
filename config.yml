@@ -1,0 +1,26 @@
+season: "2025-2026"
+timezone: "America/Chicago"
+
+sources:
+  espn: "https://www.espn.com/mens-college-basketball/team/schedule/_/id/2509/purdue-boilermakers"
+  purdue: "https://purduesports.com/sports/mens-basketball/schedule"
+
+google_calendar:
+  calendar_name: "Purdue Men’s Basketball"
+  credentials_path: "credentials.json"
+  token_path: "token.json"
+  time_min: "2025-10-15T00:00:00"
+  time_max: "2026-04-15T00:00:00"
+
+notifications:
+  enabled: true
+  reminders_minutes: [1440, 60, 5]
+
+obsidian:
+  enabled: true
+  vault_path: "/Users/kylebartlett/Obsidian"
+  output_file: "Sports/Purdue Basketball/2025-2026 Season.md"
+
+logging:
+  log_dir: "~/Library/Logs/purdue-calendar"
+  lock_file: "~/Library/Logs/purdue-calendar/refresh.lock"
