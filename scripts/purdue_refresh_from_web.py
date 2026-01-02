@@ -76,7 +76,7 @@ def main():
     # Pull latest schedule/results from ESPN (best-effort)
     games_new = games_old
     try:
-        espn_games = scrape_espn_schedule(cfg["sources"]["espn"])
+        espn_games = scrape_espn_schedule(cfg["sources"]["espn"], season=cfg.get("season"))
 
         existing_regular = {(g["date"], g["opponent"]): g for g in games_old if g.get("phase", "regular") == "regular"}
         merged_regular = []
