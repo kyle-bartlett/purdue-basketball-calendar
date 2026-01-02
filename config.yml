@@ -6,15 +6,16 @@ sources:
   purdue: "https://purduesports.com/sports/mens-basketball/schedule"
 
 google_calendar:
-  calendar_name: "Purdue Men’s Basketball"
+  calendar_name: "Purdue Men's Basketball"
   credentials_path: "credentials.json"
   token_path: "token.json"
-  time_min: "2025-10-15T00:00:00"
-  time_max: "2026-04-15T00:00:00"
+  # time_min/time_max are now auto-calculated from season (Oct 1 - Apr 30)
+  # Uncomment to override: time_min: "2025-10-01T00:00:00"
+  # Uncomment to override: time_max: "2026-04-30T00:00:00"
 
 notifications:
   enabled: true
-  reminders_minutes: [1440, 60, 5]
+  reminders_minutes: [1440, 60]  # 24 hours + 1 hour before game
 
 obsidian:
   enabled: true

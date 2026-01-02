@@ -63,7 +63,7 @@ def scrape_espn_schedule(url: str, season: Optional[str] = None) -> List[Dict]:
             for c in cells[2:]:
                 if re.search(r"\b[WL]\b\s*\d+[-–]\d+", c):
                     result = c.replace("–", "-")
-                if re.search(r"\b(ESPN|FOX|CBS|BTN|FS1|FS2|NBC|Peacock)\b", c, re.I):
+                if re.search(r"\b(ESPN[2U]?|ABC|FOX|CBS|CBSSN|BTN|FS[12]|NBC|Peacock|TBS|TNT|truTV|MAX)\b", c, re.I):
                     tv = c
 
             games.append({

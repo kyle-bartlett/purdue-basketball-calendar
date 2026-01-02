@@ -2,8 +2,9 @@
 from __future__ import annotations
 import argparse
 import json
+import re
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Tuple
 import yaml
 from filelock import FileLock, Timeout
 
@@ -14,16 +15,59 @@ from scripts.gcal import get_service, get_or_create_calendar, list_events_window
 def stable_id(date_iso: str, opponent: str, phase: str) -> str:
     return f"{date_iso}-{slug(opponent)}-{slug(phase)}"
 
-def build_event_body(game: dict, reminders_minutes: List[int]) -> dict:
+def parse_season(season: str) -> Tuple[int, int]:
+    """Parse season string like '2025-2026' into (start_year, end_year)."""
+    match = re.match(r"(\d{4})-(\d{4})", season)
+    if match:
+        return int(match.group(1)), int(match.group(2))
+    raise ValueError(f"Invalid season format: {season}")
+
+def get_time_window(cfg: dict) -> Tuple[str, str]:
+    """Get time_min and time_max, auto-calculating from season if not specified."""
+    gcal = cfg.get("google_calendar", {})
+    if gcal.get("time_min") and gcal.get("time_max"):
+        return gcal["time_min"], gcal["time_max"]
+
+    # Auto-calculate from season
+    start_year, end_year = parse_season(cfg["season"])
+    time_min = f"{start_year}-10-01T00:00:00"
+    time_max = f"{end_year}-04-30T00:00:00"
+    return time_min, time_max
+
+def calculate_record(games: List[dict], up_to_date: str) -> Tuple[int, int]:
+    """Calculate W-L record for games up to (and including) a given date."""
+    wins = 0
+    losses = 0
+    for g in games:
+        if g["date"] > up_to_date:
+            continue
+        result = g.get("result", "")
+        if result.startswith("W"):
+            wins += 1
+        elif result.startswith("L"):
+            losses += 1
+    return wins, losses
+
+def build_event_body(game: dict, reminders_minutes: List[int], record: Tuple[int, int] | None = None) -> dict:
     date_iso = game["date"]
     title_base = f"Purdue vs {game['opponent']}"
-    title = f"{title_base} — {game['result']}" if game.get("result") else title_base
+
+    # Include result and record in title for completed games
+    if game.get("result"):
+        if record and (record[0] > 0 or record[1] > 0):
+            title = f"{title_base} — {game['result']} ({record[0]}-{record[1]})"
+        else:
+            title = f"{title_base} — {game['result']}"
+    else:
+        title = title_base
 
     desc_lines = []
     if game.get("tv"):
         desc_lines.append(f"TV: {game['tv']}")
     if game.get("result"):
         desc_lines.append(f"Result: {game['result']}")
+        if record and (record[0] > 0 or record[1] > 0):
+            desc_lines.append(f"Record: {record[0]}-{record[1]}")
     if game.get("notes"):
         desc_lines.append(game["notes"])
     description = "\n".join(desc_lines).strip()
@@ -133,7 +177,8 @@ def main():
         service = get_service(cred, token)
         cal_id = get_or_create_calendar(service, cfg["google_calendar"]["calendar_name"])
 
-        events = list_events_window(service, cal_id, cfg["google_calendar"]["time_min"], cfg["google_calendar"]["time_max"])
+        time_min, time_max = get_time_window(cfg)
+        events = list_events_window(service, cal_id, time_min, time_max)
         existing_by_stable = {}
         for ev in events:
             ep = (ev.get("extendedProperties", {}) or {}).get("private", {}) or {}
@@ -142,8 +187,11 @@ def main():
                 existing_by_stable[sid] = ev
 
         reminders = cfg["notifications"]["reminders_minutes"]
-        for g in games_new:
-            body = build_event_body(g, reminders)
+        # Sort games by date for accurate record calculation
+        sorted_games = sorted(games_new, key=lambda x: x["date"])
+        for g in sorted_games:
+            record = calculate_record(sorted_games, g["date"]) if g.get("result") else None
+            body = build_event_body(g, reminders, record)
             result = upsert_event(service, cal_id, g["stable_id"], body, existing_by_stable)
             if result == "created":
                 created += 1
@@ -157,10 +205,15 @@ def main():
     finished = now_local(tz)
     status = "ok" if errors == 0 else "error"
 
+    # Calculate current record for run data
+    sorted_for_record = sorted(games_new, key=lambda x: x["date"])
+    wins, losses = calculate_record(sorted_for_record, "9999-12-31")
+
     run = {
         "started_at": iso_ts(started),
         "finished_at": iso_ts(finished),
         "status": status,
+        "record": f"{wins}-{losses}",
         "created": created,
         "updated": updated,
         "unchanged": unchanged,
@@ -179,27 +232,48 @@ def main():
     json_path.write_text(json.dumps(run, indent=2))
     latest_json.write_text(json.dumps(run, indent=2))
 
+    # Calculate current season record
+    sorted_games = sorted(games_new, key=lambda x: x["date"])
+    total_wins, total_losses = calculate_record(sorted_games, "9999-12-31")
+
     lines = []
     lines.append(f"# Purdue Calendar Refresh — {run['status'].upper()}")
+    lines.append(f"**Season Record: {total_wins}-{total_losses}**")
+    lines.append("")
     lines.append(f"- Started: {run['started_at']}")
     lines.append(f"- Finished: {run['finished_at']}")
     lines.append(f"- Created: {created}")
     lines.append(f"- Updated: {updated}")
     lines.append(f"- Unchanged: {unchanged}")
     lines.append(f"- Errors: {errors}")
+
+    # Prominently show schedule changes
+    if changed:
+        lines.append("")
+        lines.append("## ⚠️ SCHEDULE CHANGES DETECTED")
+        for item in changed[:50]:
+            ch = ", ".join([f"{k}: {v['from']} → {v['to']}" for k, v in item["changes"].items()])
+            lines.append(f"- **{item['date']}** vs {item['opponent']}: {ch}")
+    else:
+        lines.append("")
+        lines.append("## Schedule Changes")
+        lines.append("- No changes detected")
+
     if warnings:
         lines.append("")
         lines.append("## Warnings")
         for w in warnings:
             lines.append(f"- {w}")
-    lines.append("")
-    lines.append("## Changed games (this run)")
-    if not changed:
-        lines.append("- None")
-    else:
-        for item in changed[:50]:
-            ch = ", ".join([f"{k}: {v['from']} → {v['to']}" for k, v in item["changes"].items()])
-            lines.append(f"- {item['date']} vs {item['opponent']}: {ch}")
+
+    # Show upcoming games
+    today = finished.strftime("%Y-%m-%d")
+    upcoming = [g for g in sorted_games if g["date"] >= today and not g.get("result")][:5]
+    if upcoming:
+        lines.append("")
+        lines.append("## Upcoming Games")
+        for g in upcoming:
+            tv_info = f" ({g['tv']})" if g.get("tv") else ""
+            lines.append(f"- **{g['date']}**: vs {g['opponent']}{tv_info}")
 
     md = "\n".join(lines)
     md_path.write_text(md)
