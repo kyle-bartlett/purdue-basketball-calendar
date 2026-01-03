@@ -10,8 +10,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install -r requirements.txt
-      - run: python scripts/purdue_refresh_from_web.py --config config.yml
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Update schedule from ESPN
+        run: python scripts/update_schedule.py --config config.yml
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/schedule.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto-update schedule from ESPN [skip ci]"
+            git push
+          fi
