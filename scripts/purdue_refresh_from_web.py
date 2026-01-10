@@ -26,6 +26,9 @@ def build_event_body(game: dict, reminders_minutes: List[int]) -> dict:
         desc_lines.append(f"TV: {game['tv']}")
     if game.get("result"):
         desc_lines.append(f"Result: {game['result']}")
+    if game.get("link"):
+        label = "Recap" if game.get("result") else "Game Center"
+        desc_lines.append(f"{label}: {game['link']}")
     if game.get("notes"):
         desc_lines.append(game["notes"])
     description = "\n".join(desc_lines).strip()
@@ -70,7 +73,7 @@ def build_event_body(game: dict, reminders_minutes: List[int]) -> dict:
 
 def diff_game(old: dict, new: dict) -> Dict:
     changes = {}
-    for k in ["opponent", "location", "tv", "result", "date", "phase", "time"]:
+    for k in ["opponent", "location", "tv", "result", "date", "phase", "time", "link"]:
         if (old.get(k, "") or "") != (new.get(k, "") or ""):
             changes[k] = {"from": old.get(k, ""), "to": new.get(k, "")}
     return changes
@@ -126,6 +129,8 @@ def main():
                 g["time"] = eg["time"]
             if eg.get("result"):
                 g["result"] = eg["result"]
+            if eg.get("link"):
+                g["link"] = eg["link"]
             merged_regular.append(g)
 
         placeholders = [g for g in games_old if g.get("phase") in ("big_ten_tournament", "ncaa_tournament", "placeholder")]

@@ -18,6 +18,8 @@ def scrape_espn_schedule(url: str) -> List[Dict]:
             tds = tr.find_all(["td", "th"])
             if len(tds) < 2:
                 continue
+            
+            # Extract text for basic parsing
             cells = [_clean(td.get_text(" ", strip=True)) for td in tds]
             if not cells or cells[0].lower().startswith("date"):
                 continue
@@ -32,19 +34,37 @@ def scrape_espn_schedule(url: str) -> List[Dict]:
             tv = ""
             result = ""
             time = ""
+            game_link = ""
 
-            # Look for time, W/L score, and TV tokens in remaining cells
-            for c in cells[2:]:
+            # Look for time, W/L score, TV tokens, and LINKS in remaining cells
+            # We iterate through the tds (skipping first two: Date, Opponent) matching the cells
+            for i, td in enumerate(tds[2:], start=2):
+                text = cells[i]
+                
                 # Check for game time (e.g., "2:00 PM", "10:00 AM", "TBD")
-                time_match = re.search(r"^(\d{1,2}:\d{2}\s*(?:AM|PM))$", c, re.I)
+                time_match = re.search(r"^(\d{1,2}:\d{2}\s*(?:AM|PM))$", text, re.I)
                 if time_match:
                     time = time_match.group(1).upper()
+                    # If this cell has a link, it's the game preview/tickets
+                    link_tag = td.find("a", href=True)
+                    if link_tag and "gameId" in link_tag["href"]:
+                         game_link = link_tag["href"]
+
                 # Check for W/L result
-                if re.search(r"\b[WL]\b\s*\d+[-–]\d+", c):
-                    result = c.replace("–", "-")
+                if re.search(r"\b[WL]\b\s*\d+[-–]\d+", text):
+                    result = text.replace("–", "-")
+                    # If this cell has a link, it's the recap
+                    link_tag = td.find("a", href=True)
+                    if link_tag and "gameId" in link_tag["href"]:
+                         game_link = link_tag["href"]
+
                 # Check for TV network
-                if re.search(r"\b(ESPN|FOX|CBS|BTN|FS1|FS2|NBC|Peacock)\b", c, re.I):
-                    tv = c
+                if re.search(r"\b(ESPN|FOX|CBS|BTN|FS1|FS2|NBC|Peacock)\b", text, re.I):
+                    tv = text
+
+            # Normalize link
+            if game_link and not game_link.startswith("http"):
+                game_link = f"https://www.espn.com{game_link}"
 
             games.append({
                 "date": dt.strftime("%Y-%m-%d"),
@@ -52,7 +72,8 @@ def scrape_espn_schedule(url: str) -> List[Dict]:
                 "opponent": opponent,
                 "location": "",
                 "tv": tv,
-                "result": result
+                "result": result,
+                "link": game_link
             })
 
     # Deduplicate by (date, opponent)
