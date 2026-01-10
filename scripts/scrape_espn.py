@@ -31,16 +31,24 @@ def scrape_espn_schedule(url: str) -> List[Dict]:
             opponent = cells[1]
             tv = ""
             result = ""
+            time = ""
 
-            # Look for W/L score and TV tokens in remaining cells
+            # Look for time, W/L score, and TV tokens in remaining cells
             for c in cells[2:]:
+                # Check for game time (e.g., "2:00 PM", "10:00 AM", "TBD")
+                time_match = re.search(r"^(\d{1,2}:\d{2}\s*(?:AM|PM))$", c, re.I)
+                if time_match:
+                    time = time_match.group(1).upper()
+                # Check for W/L result
                 if re.search(r"\b[WL]\b\s*\d+[-–]\d+", c):
                     result = c.replace("–", "-")
+                # Check for TV network
                 if re.search(r"\b(ESPN|FOX|CBS|BTN|FS1|FS2|NBC|Peacock)\b", c, re.I):
                     tv = c
 
             games.append({
                 "date": dt.strftime("%Y-%m-%d"),
+                "time": time,
                 "opponent": opponent,
                 "location": "",
                 "tv": tv,

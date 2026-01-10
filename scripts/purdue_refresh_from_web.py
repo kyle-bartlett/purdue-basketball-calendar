@@ -2,6 +2,7 @@
 from __future__ import annotations
 import argparse
 import json
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List
 import yaml
@@ -16,6 +17,7 @@ def stable_id(date_iso: str, opponent: str, phase: str) -> str:
 
 def build_event_body(game: dict, reminders_minutes: List[int]) -> dict:
     date_iso = game["date"]
+    game_time = game.get("time", "")
     title_base = f"Purdue vs {game['opponent']}"
     title = f"{title_base} — {game['result']}" if game.get("result") else title_base
 
@@ -28,12 +30,38 @@ def build_event_body(game: dict, reminders_minutes: List[int]) -> dict:
         desc_lines.append(game["notes"])
     description = "\n".join(desc_lines).strip()
 
+    # If we have a game time, create a timed event; otherwise all-day
+    if game_time and game_time != "TBD":
+        try:
+            # Parse time like "2:00 PM" or "10:00 AM"
+            time_obj = datetime.strptime(game_time, "%I:%M %p")
+            # Combine with date
+            date_obj = datetime.strptime(date_iso, "%Y-%m-%d")
+            start_dt = date_obj.replace(hour=time_obj.hour, minute=time_obj.minute)
+            # Games are typically ~2.5 hours
+            end_dt = start_dt + timedelta(hours=2, minutes=30)
+
+            start_end = {
+                "start": {"dateTime": start_dt.strftime("%Y-%m-%dT%H:%M:%S"), "timeZone": "America/New_York"},
+                "end": {"dateTime": end_dt.strftime("%Y-%m-%dT%H:%M:%S"), "timeZone": "America/New_York"},
+            }
+        except ValueError:
+            # Fallback to all-day if time parsing fails
+            start_end = {
+                "start": {"date": date_iso},
+                "end": {"date": date_iso},
+            }
+    else:
+        start_end = {
+            "start": {"date": date_iso},
+            "end": {"date": date_iso},
+        }
+
     return {
         "summary": title,
         "description": description,
         "location": game.get("location", "") or "",
-        "start": {"date": date_iso},
-        "end": {"date": date_iso},
+        **start_end,
         "reminders": {
             "useDefault": False,
             "overrides": [{"method":"popup","minutes": int(m)} for m in reminders_minutes]
@@ -42,7 +70,7 @@ def build_event_body(game: dict, reminders_minutes: List[int]) -> dict:
 
 def diff_game(old: dict, new: dict) -> Dict:
     changes = {}
-    for k in ["opponent", "location", "tv", "result", "date", "phase"]:
+    for k in ["opponent", "location", "tv", "result", "date", "phase", "time"]:
         if (old.get(k, "") or "") != (new.get(k, "") or ""):
             changes[k] = {"from": old.get(k, ""), "to": new.get(k, "")}
     return changes
@@ -88,11 +116,14 @@ def main():
                 "location": "",
                 "phase": "regular",
                 "tv": "",
+                "time": "",
                 "result": "",
                 "notes": ""
             })
             if eg.get("tv"):
                 g["tv"] = eg["tv"]
+            if eg.get("time"):
+                g["time"] = eg["time"]
             if eg.get("result"):
                 g["result"] = eg["result"]
             merged_regular.append(g)
