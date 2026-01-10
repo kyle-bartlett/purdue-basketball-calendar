@@ -45,19 +45,19 @@ def build_event_body(game: dict, reminders_minutes: List[int]) -> dict:
             end_dt = start_dt + timedelta(hours=2, minutes=30)
 
             start_end = {
-                "start": {"dateTime": start_dt.strftime("%Y-%m-%dT%H:%M:%S"), "timeZone": "America/New_York"},
-                "end": {"dateTime": end_dt.strftime("%Y-%m-%dT%H:%M:%S"), "timeZone": "America/New_York"},
+                "start": {"dateTime": start_dt.strftime("%Y-%m-%dT%H:%M:%S"), "timeZone": "America/New_York", "date": None},
+                "end": {"dateTime": end_dt.strftime("%Y-%m-%dT%H:%M:%S"), "timeZone": "America/New_York", "date": None},
             }
         except ValueError:
             # Fallback to all-day if time parsing fails
             start_end = {
-                "start": {"date": date_iso},
-                "end": {"date": date_iso},
+                "start": {"date": date_iso, "dateTime": None, "timeZone": None},
+                "end": {"date": date_iso, "dateTime": None, "timeZone": None},
             }
     else:
         start_end = {
-            "start": {"date": date_iso},
-            "end": {"date": date_iso},
+            "start": {"date": date_iso, "dateTime": None, "timeZone": None},
+            "end": {"date": date_iso, "dateTime": None, "timeZone": None},
         }
 
     return {
@@ -179,16 +179,21 @@ def main():
 
         reminders = cfg["notifications"]["reminders_minutes"]
         for g in games_new:
-            body = build_event_body(g, reminders)
-            result = upsert_event(service, cal_id, g["stable_id"], body, existing_by_stable)
-            if result == "created":
-                created += 1
-            else:
-                updated += 1
+            try:
+                body = build_event_body(g, reminders)
+                result = upsert_event(service, cal_id, g["stable_id"], body, existing_by_stable)
+                if result == "created":
+                    created += 1
+                else:
+                    updated += 1
+            except Exception as e:
+                errors += 1
+                warnings.append(f"Failed to update game {g['date']} vs {g['opponent']}: {e}")
+                # safe_print(f"DEBUG: Failed body for {g['opponent']}: {json.dumps(body, indent=2)}")
 
     except Exception as e:
         errors += 1
-        warnings.append(f"Google Calendar update failed: {e}")
+        warnings.append(f"Google Calendar setup failed: {e}")
 
     finished = now_local(tz)
     status = "ok" if errors == 0 else "error"
