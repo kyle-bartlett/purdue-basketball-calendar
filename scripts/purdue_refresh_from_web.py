@@ -15,7 +15,7 @@ from scripts.gcal import get_service, get_or_create_calendar, list_events_window
 def stable_id(date_iso: str, opponent: str, phase: str) -> str:
     return f"{date_iso}-{slug(opponent)}-{slug(phase)}"
 
-def build_event_body(game: dict, reminders_minutes: List[int]) -> dict:
+def build_event_body(game: dict, reminders_minutes: List[int], target_tz_name: str = "America/New_York") -> dict:
     date_iso = game["date"]
     game_time = game.get("time", "")
     title_base = f"Purdue vs {game['opponent']}"
@@ -36,17 +36,26 @@ def build_event_body(game: dict, reminders_minutes: List[int]) -> dict:
     # If we have a game time, create a timed event; otherwise all-day
     if game_time and game_time != "TBD":
         try:
-            # Parse time like "2:00 PM" or "10:00 AM"
-            time_obj = datetime.strptime(game_time, "%I:%M %p")
-            # Combine with date
-            date_obj = datetime.strptime(date_iso, "%Y-%m-%d")
-            start_dt = date_obj.replace(hour=time_obj.hour, minute=time_obj.minute)
+            import pytz
+            # Parse time like "2:00 PM" or "10:00 AM" (Assume source is ALWAYS Eastern Time for Purdue/ESPN)
+            source_tz = pytz.timezone("America/New_York")
+            target_tz = pytz.timezone(target_tz_name)
+            
+            # Create naive datetime from scraped date + time
+            naive_dt = datetime.strptime(f"{date_iso} {game_time}", "%Y-%m-%d %I:%M %p")
+            
+            # Localize to Eastern Time
+            et_dt = source_tz.localize(naive_dt)
+            
+            # Convert to Target Timezone (e.g. Central)
+            local_dt = et_dt.astimezone(target_tz)
+            
             # Games are typically ~2.5 hours
-            end_dt = start_dt + timedelta(hours=2, minutes=30)
+            end_dt = local_dt + timedelta(hours=2, minutes=30)
 
             start_end = {
-                "start": {"dateTime": start_dt.strftime("%Y-%m-%dT%H:%M:%S"), "timeZone": "America/New_York", "date": None},
-                "end": {"dateTime": end_dt.strftime("%Y-%m-%dT%H:%M:%S"), "timeZone": "America/New_York", "date": None},
+                "start": {"dateTime": local_dt.strftime("%Y-%m-%dT%H:%M:%S"), "timeZone": target_tz_name, "date": None},
+                "end": {"dateTime": end_dt.strftime("%Y-%m-%dT%H:%M:%S"), "timeZone": target_tz_name, "date": None},
             }
         except ValueError:
             # Fallback to all-day if time parsing fails
@@ -180,7 +189,7 @@ def main():
         reminders = cfg["notifications"]["reminders_minutes"]
         for g in games_new:
             try:
-                body = build_event_body(g, reminders)
+                body = build_event_body(g, reminders, tz)
                 result = upsert_event(service, cal_id, g["stable_id"], body, existing_by_stable)
                 if result == "created":
                     created += 1
